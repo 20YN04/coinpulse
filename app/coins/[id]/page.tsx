@@ -1,5 +1,5 @@
 import React from "react";
-import { fetcher, getPools } from "@/lib/coingecko.actions";
+import { fetcher, getPools } from "@/lib/coinGecko.actions";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";

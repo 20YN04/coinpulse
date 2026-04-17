@@ -1,4 +1,4 @@
-import { fetcher } from "@/lib/coingecko.actions";
+import { fetcher } from "@/lib/coinGecko.actions";
 import Image from "next/image";
 import Link from "next/link";
 

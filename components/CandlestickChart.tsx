@@ -14,7 +14,7 @@ import {
   IChartApi,
   ISeriesApi,
 } from "lightweight-charts";
-import { fetcher } from "@/lib/coingecko.actions";
+import { fetcher } from "@/lib/coinGecko.actions";
 import { convertOHLCData } from "@/lib/utils";
 
 const CandlestickChart = ({

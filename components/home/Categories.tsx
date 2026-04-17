@@ -1,4 +1,4 @@
-import { fetcher } from "@/lib/coingecko.actions";
+import { fetcher } from "@/lib/coinGecko.actions";
 import DataTable from "@/components/DataTable";
 import Image from "next/image";
 import { cn, formatCurrency, formatPercentage } from "@/lib/utils";

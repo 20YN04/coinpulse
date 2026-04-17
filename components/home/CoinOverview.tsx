@@ -1,5 +1,5 @@
 import React from "react";
-import { fetcher } from "@/lib/coingecko.actions";
+import { fetcher } from "@/lib/coinGecko.actions";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
 import { CoinOverviewFallback } from "./fallback";
