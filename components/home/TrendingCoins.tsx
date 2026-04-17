@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import DataTable from '@/components/ui/DataTable';
+import DataTable from '@/components/DataTable';
 import { TrendingCoinsFallback } from './fallback';
 
 const TrendingCoins = async () => {

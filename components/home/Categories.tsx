@@ -1,5 +1,5 @@
 import { fetcher } from '@/lib/coingecko.actions';
-import DataTable from '@/components/ui/DataTable';
+import DataTable from '@/components/DataTable';
 import Image from 'next/image';
 import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
 import { TrendingDown, TrendingUp } from 'lucide-react';
