@@ -1,6 +1,6 @@
-import React from 'react';
-import DataTable from '@/components/DataTable';
-import { cn } from '@/lib/utils';
+import React from "react";
+import DataTable from "@/components/DataTable";
+import { cn } from "@/lib/utils";
 
 export const CoinOverviewFallback = () => {
   return (
@@ -22,7 +22,7 @@ export const CoinOverviewFallback = () => {
 export const TrendingCoinsFallback = () => {
   const columns = [
     {
-      header: 'Name',
+      header: "Name",
       cell: () => (
         <div className="name-link">
           <div className="name-image skeleton" />
@@ -31,7 +31,7 @@ export const TrendingCoinsFallback = () => {
       ),
     },
     {
-      header: '24h Change',
+      header: "24h Change",
       cell: () => (
         <div className="price-change">
           <div className="change-icon skeleton" />
@@ -40,7 +40,7 @@ export const TrendingCoinsFallback = () => {
       ),
     },
     {
-      header: 'Price',
+      header: "Price",
       cell: () => <div className="price-line skeleton" />,
     },
   ];
@@ -63,13 +63,13 @@ export const TrendingCoinsFallback = () => {
 export const CategoriesFallback = () => {
   const columns = [
     {
-      header: 'Category',
-      cellClassName: 'category-cell',
+      header: "Category",
+      cellClassName: "category-cell",
       cell: () => <div className="category-line skeleton" />,
     },
     {
-      header: 'Top Gainers',
-      cellClassName: 'top-gainers-cell',
+      header: "Top Gainers",
+      cellClassName: "top-gainers-cell",
       cell: () => (
         <div className="flex gap-1">
           <div className="gainer-image skeleton" />
@@ -79,8 +79,8 @@ export const CategoriesFallback = () => {
       ),
     },
     {
-      header: '24h Change',
-      cellClassName: 'change-header-cell',
+      header: "24h Change",
+      cellClassName: "change-header-cell",
       cell: () => (
         <div className="change-cell">
           <div className="change-icon skeleton" />
@@ -89,13 +89,13 @@ export const CategoriesFallback = () => {
       ),
     },
     {
-      header: 'Market Cap',
-      cellClassName: 'market-cap-cell',
+      header: "Market Cap",
+      cellClassName: "market-cap-cell",
       cell: () => <div className="value-skeleton-lg skeleton" />,
     },
     {
-      header: '24h Volume',
-      cellClassName: 'volume-cell',
+      header: "24h Volume",
+      cellClassName: "volume-cell",
       cell: () => <div className="value-skeleton-md skeleton" />,
     },
   ];

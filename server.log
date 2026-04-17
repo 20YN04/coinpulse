@@ -1,0 +1,14 @@
+
+> coinpulse@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.120:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 283ms
+ GET / 200 in 493ms (compile: 94ms, render: 398ms)
+ GET /coins/bitcoin 200 in 628ms (compile: 191ms, render: 438ms)
+[?25h

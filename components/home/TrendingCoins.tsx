@@ -1,25 +1,29 @@
-import { fetcher } from '@/lib/coingecko.actions';
-import Link from 'next/link';
-import Image from 'next/image';
-import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
-import { TrendingDown, TrendingUp } from 'lucide-react';
-import DataTable from '@/components/DataTable';
-import { TrendingCoinsFallback } from './fallback';
+import { fetcher } from "@/lib/coingecko.actions";
+import Link from "next/link";
+import Image from "next/image";
+import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import DataTable from "@/components/DataTable";
+import { TrendingCoinsFallback } from "./fallback";
 
 const TrendingCoins = async () => {
   let trendingCoins;
 
   try {
-    trendingCoins = await fetcher<{ coins: TrendingCoin[] }>('/search/trending', undefined, 300);
+    trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
+      "/search/trending",
+      undefined,
+      300,
+    );
   } catch (error) {
-    console.error('Error fetching trending coins:', error);
+    console.error("Error fetching trending coins:", error);
     return <TrendingCoinsFallback />;
   }
 
   const columns: DataTableColumn<TrendingCoin>[] = [
     {
-      header: 'Name',
-      cellClassName: 'name-cell',
+      header: "Name",
+      cellClassName: "name-cell",
       cell: (coin) => {
         const item = coin.item;
 
@@ -32,14 +36,19 @@ const TrendingCoins = async () => {
       },
     },
     {
-      header: '24h Change',
-      cellClassName: 'change-cell',
+      header: "24h Change",
+      cellClassName: "change-cell",
       cell: (coin) => {
         const item = coin.item;
         const isTrendingUp = item.data.price_change_percentage_24h.usd > 0;
 
         return (
-          <div className={cn('price-change', isTrendingUp ? 'text-green-500' : 'text-red-500')}>
+          <div
+            className={cn(
+              "price-change",
+              isTrendingUp ? "text-green-500" : "text-red-500",
+            )}
+          >
             <p className="flex items-center">
               {formatPercentage(item.data.price_change_percentage_24h.usd)}
               {isTrendingUp ? (
@@ -53,8 +62,8 @@ const TrendingCoins = async () => {
       },
     },
     {
-      header: 'Price',
-      cellClassName: 'price-cell',
+      header: "Price",
+      cellClassName: "price-cell",
       cell: (coin) => formatCurrency(coin.item.data.price),
     },
   ];

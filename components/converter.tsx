@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import Image from 'next/image';
-import { formatCurrency } from '@/lib/utils';
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { formatCurrency } from "@/lib/utils";
 
 import {
   Select,
@@ -13,11 +13,11 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
-  const [currency, setCurrency] = useState('usd');
-  const [amount, setAmount] = useState('10');
+  const [currency, setCurrency] = useState("usd");
+  const [amount, setAmount] = useState("10");
 
   const convertedPrice = (parseFloat(amount) || 0) * (priceList[currency] || 0);
 
@@ -43,7 +43,13 @@ const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
         <div className="divider">
           <div className="line" />
 
-          <Image src="/converter.svg" alt="converter" width={32} height={32} className="icon" />
+          <Image
+            src="/converter.svg"
+            alt="converter"
+            width={32}
+            height={32}
+            className="icon"
+          />
         </div>
 
         <div className="output-wrapper">
@@ -57,7 +63,11 @@ const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
             </SelectTrigger>
             <SelectContent className="select-content" data-converter>
               {Object.keys(priceList).map((currencyCode) => (
-                <SelectItem value={currencyCode} key={currencyCode} className="select-item">
+                <SelectItem
+                  value={currencyCode}
+                  key={currencyCode}
+                  className="select-item"
+                >
                   {currencyCode.toUpperCase()}
                 </SelectItem>
               ))}

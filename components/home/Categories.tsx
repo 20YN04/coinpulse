@@ -1,32 +1,41 @@
-import { fetcher } from '@/lib/coingecko.actions';
-import DataTable from '@/components/DataTable';
-import Image from 'next/image';
-import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
-import { TrendingDown, TrendingUp } from 'lucide-react';
-import { CategoriesFallback } from './fallback';
+import { fetcher } from "@/lib/coingecko.actions";
+import DataTable from "@/components/DataTable";
+import Image from "next/image";
+import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { CategoriesFallback } from "./fallback";
 
 const Categories = async () => {
   try {
-    const categories = await fetcher<Category[]>('/coins/categories');
+    const categories = await fetcher<Category[]>("/coins/categories");
 
     const columns: DataTableColumn<Category>[] = [
-      { header: 'Category', cellClassName: 'category-cell', cell: (category) => category.name },
       {
-        header: 'Top Gainers',
-        cellClassName: 'top-gainers-cell',
+        header: "Category",
+        cellClassName: "category-cell",
+        cell: (category) => category.name,
+      },
+      {
+        header: "Top Gainers",
+        cellClassName: "top-gainers-cell",
         cell: (category) =>
           category.top_3_coins.map((coin) => (
             <Image src={coin} alt={coin} key={coin} width={28} height={28} />
           )),
       },
       {
-        header: '24h Change',
-        cellClassName: 'change-header-cell',
+        header: "24h Change",
+        cellClassName: "change-header-cell",
         cell: (category) => {
           const isTrendingUp = category.market_cap_change_24h > 0;
 
           return (
-            <div className={cn('change-cell', isTrendingUp ? 'text-green-500' : 'text-red-500')}>
+            <div
+              className={cn(
+                "change-cell",
+                isTrendingUp ? "text-green-500" : "text-red-500",
+              )}
+            >
               <p className="flex items-center">
                 {formatPercentage(category.market_cap_change_24h)}
                 {isTrendingUp ? (
@@ -40,13 +49,13 @@ const Categories = async () => {
         },
       },
       {
-        header: 'Market Cap',
-        cellClassName: 'market-cap-cell',
+        header: "Market Cap",
+        cellClassName: "market-cap-cell",
         cell: (category) => formatCurrency(category.market_cap),
       },
       {
-        header: '24h Volume',
-        cellClassName: 'volume-cell',
+        header: "24h Volume",
+        cellClassName: "volume-cell",
         cell: (category) => formatCurrency(category.volume_24h),
       },
     ];
@@ -64,7 +73,7 @@ const Categories = async () => {
       </div>
     );
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error("Error fetching categories:", error);
     return <CategoriesFallback />;
   }
 };
