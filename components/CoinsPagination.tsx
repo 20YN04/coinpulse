@@ -1,71 +1,71 @@
-'use client';
-
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import Image from 'next/image';
-import { formatCurrency } from '@/lib/utils';
+"use client";
 
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useRouter } from "next/navigation";
+import { buildPageNumbers, cn, ELLIPSIS } from "@/lib/utils";
 
-const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
-  const [currency, setCurrency] = useState('usd');
-  const [amount, setAmount] = useState('10');
+const CoinsPagination = ({
+  currentPage,
+  totalPages,
+  hasMorePages,
+}: Pagination) => {
+  const router = useRouter();
 
-  const convertedPrice = (parseFloat(amount) || 0) * (priceList[currency] || 0);
+  const handlePageChange = (page: number) => {
+    router.push(`/coins?page=${page}`);
+  };
+
+  const pageNumbers = buildPageNumbers(currentPage, totalPages);
+  const isLastPage = !hasMorePages || currentPage === totalPages;
 
   return (
-    <div id="converter">
-      <h4>{symbol.toUpperCase()} Converter</h4>
-
-      <div className="panel">
-        <div className="input-wrapper">
-          <Input
-            type="number"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input"
+    <Pagination id="coins-pagination">
+      <PaginationContent className="pagination-content">
+        <PaginationItem className="pagination-control prev">
+          <PaginationPrevious
+            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+            className={
+              currentPage === 1 ? "control-disabled" : "control-button"
+            }
           />
-          <div className="coin-info">
-            <Image src={icon} alt={symbol} width={20} height={20} />
-            <p>{symbol.toUpperCase()}</p>
-          </div>
+        </PaginationItem>
+
+        <div className="pagination-pages">
+          {pageNumbers.map((page, index) => (
+            <PaginationItem key={index}>
+              {page === ELLIPSIS ? (
+                <span className="ellipsis">...</span>
+              ) : (
+                <PaginationLink
+                  onClick={() => handlePageChange(page)}
+                  className={cn("page-link", {
+                    "page-link-active": currentPage === page,
+                  })}
+                >
+                  {page}
+                </PaginationLink>
+              )}
+            </PaginationItem>
+          ))}
         </div>
 
-        <div className="divider">
-          <div className="line" />
-
-          <Image src="/converter.svg" alt="converter" width={32} height={32} className="icon" />
-        </div>
-
-        <div className="output-wrapper">
-          <p>{formatCurrency(convertedPrice, 2, currency, false)}</p>
-
-          <Select value={currency} onValueChange={setCurrency}>
-            <SelectTrigger className="select-trigger" value={currency}>
-              <SelectValue placeholder="Select" className="select-value">
-                {currency.toUpperCase()}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent className="select-content" data-converter>
-              {Object.keys(priceList).map((currencyCode) => (
-                <SelectItem value={currencyCode} key={currencyCode} className="select-item">
-                  {currencyCode.toUpperCase()}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
+        <PaginationItem className="pagination-control next">
+          <PaginationNext
+            onClick={() => !isLastPage && handlePageChange(currentPage + 1)}
+            className={isLastPage ? "control-disabled" : "control-button"}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 };
-export default Converter;
+
+export default CoinsPagination;

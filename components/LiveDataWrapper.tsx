@@ -1,73 +1,108 @@
-'use server';
+"use client";
 
-import qs from 'query-string';
+import { Separator } from "@/components/ui/separator";
+import CandlestickChart from "@/components/CandlestickChart";
+import { useCoinGeckoWebSocket } from "@/hooks/useCoinGeckoWebSocket";
+import DataTable from "@/components/DataTable";
+import { formatCurrency, timeAgo } from "@/lib/utils";
+import { useState } from "react";
+import CoinHeader from "@/components/CoinHeader";
 
-const BASE_URL = process.env.COINGECKO_BASE_URL;
-const API_KEY = process.env.COINGECKO_API_KEY;
-
-if (!BASE_URL) throw new Error('Could not get base url');
-if (!API_KEY) throw new Error('Could not get api key');
-
-export async function fetcher<T>(
-  endpoint: string,
-  params?: QueryParams,
-  revalidate = 60,
-): Promise<T> {
-  const url = qs.stringifyUrl(
-    {
-      url: `${BASE_URL}/${endpoint}`,
-      query: params,
-    },
-    { skipEmptyString: true, skipNull: true },
-  );
-
-  const response = await fetch(url, {
-    headers: {
-      'x-cg-pro-api-key': API_KEY,
-      'Content-Type': 'application/json',
-    } as Record<string, string>,
-    next: { revalidate },
+const LiveDataWrapper = ({
+  children,
+  coinId,
+  poolId,
+  coin,
+  coinOHLCData,
+}: LiveDataProps) => {
+  const [liveInterval, setLiveInterval] = useState<"1s" | "1m">("1s");
+  const { trades, ohlcv, price } = useCoinGeckoWebSocket({
+    coinId,
+    poolId,
+    liveInterval,
   });
 
-  if (!response.ok) {
-    const errorBody: CoinGeckoErrorBody = await response.json().catch(() => ({}));
+  const tradeColumns: DataTableColumn<Trade>[] = [
+    {
+      header: "Price",
+      cellClassName: "price-cell",
+      cell: (trade) => (trade.price ? formatCurrency(trade.price) : "-"),
+    },
+    {
+      header: "Amount",
+      cellClassName: "amount-cell",
+      cell: (trade) => trade.amount?.toFixed(4) ?? "-",
+    },
+    {
+      header: "Value",
+      cellClassName: "value-cell",
+      cell: (trade) => (trade.value ? formatCurrency(trade.value) : "-"),
+    },
+    {
+      header: "Buy/Sell",
+      cellClassName: "type-cell",
+      cell: (trade) => (
+        <span
+          className={trade.type === "b" ? "text-green-500" : "text-red-500"}
+        >
+          {trade.type === "b" ? "Buy" : "Sell"}
+        </span>
+      ),
+    },
+    {
+      header: "Time",
+      cellClassName: "time-cell",
+      cell: (trade) => (trade.timestamp ? timeAgo(trade.timestamp) : "-"),
+    },
+  ];
 
-    throw new Error(`API Error: ${response.status}: ${errorBody.error || response.statusText} `);
-  }
+  return (
+    <section id="live-data-wrapper">
+      <CoinHeader
+        name={coin.name}
+        image={coin.image.large}
+        livePrice={price?.usd ?? coin.market_data.current_price.usd}
+        livePriceChangePercentage24h={
+          price?.change24h ??
+          coin.market_data.price_change_percentage_24h_in_currency.usd
+        }
+        priceChangePercentage30d={
+          coin.market_data.price_change_percentage_30d_in_currency.usd
+        }
+        priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
+      />
+      <Separator className="divider" />
 
-  return response.json();
-}
+      <div className="trend">
+        <CandlestickChart
+          coinId={coinId}
+          data={coinOHLCData}
+          liveOhlcv={ohlcv}
+          mode="live"
+          initialPeriod="daily"
+          liveInterval={liveInterval}
+          setLiveInterval={setLiveInterval}
+        >
+          <h4>Trend Overview</h4>
+        </CandlestickChart>
+      </div>
 
-export async function getPools(
-  id: string,
-  network?: string | null,
-  contractAddress?: string | null,
-): Promise<PoolData> {
-  const fallback: PoolData = {
-    id: '',
-    address: '',
-    name: '',
-    network: '',
-  };
+      <Separator className="divider" />
 
-  if (network && contractAddress) {
-    try {
-      const poolData = await fetcher<{ data: PoolData[] }>(
-        `/onchain/networks/${network}/tokens/${contractAddress}/pools`,
-      );
+      {tradeColumns && (
+        <div className="trades">
+          <h4>Recent Trades</h4>
 
-      return poolData.data?.[0] ?? fallback;
-    } catch (error) {
-      console.log(error);
-      return fallback;
-    }
-  }
+          <DataTable
+            columns={tradeColumns}
+            data={trades}
+            rowKey={(_, index) => index}
+            tableClassName="trades-table"
+          />
+        </div>
+      )}
+    </section>
+  );
+};
 
-  try {
-    const poolData = await fetcher<{ data: PoolData[] }>('/onchain/search/pools', { query: id });
-
-    return poolData.data?.[0] ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
+export default LiveDataWrapper;
